@@ -1,0 +1,48 @@
+{% extends "shop/base.html" %}
+{% block title %}QuickBite | Order food online{% endblock %}
+{% block content %}
+<section class="hero rounded-4 p-4 p-md-5 mb-4">
+  <div class="row align-items-center">
+    <div class="col-lg-7">
+      <span class="eyebrow">GOOD FOOD, GOOD MOOD</span>
+      <h1 class="display-5 fw-bold mt-2">Cravings? We've got you.</h1>
+      <p class="lead mb-4">Your favourite meals, freshly prepared and ready to order.</p>
+      <form class="searchbar d-flex gap-2" method="get">
+        <input class="form-control form-control-lg" name="q" value="{{ search_query }}" placeholder="Search burgers, pizza, drinks...">
+        <button class="btn btn-dark btn-lg">Search</button>
+      </form>
+    </div>
+    <div class="col-lg-5 text-center d-none d-lg-block"><div class="hero-emoji">🍕 🍔 🍟</div></div>
+  </div>
+</section>
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+  <div><h2 class="section-title mb-1">Explore our menu</h2><p class="text-muted mb-0">Choose something delicious.</p></div>
+  <a href="{% url 'cart_detail' %}" class="btn btn-outline-dark">View cart →</a>
+</div>
+<div class="d-flex flex-wrap gap-2 mb-4">
+  <a class="category-chip {% if not active_category %}active{% endif %}" href="{% url 'home' %}">All items</a>
+  {% for category in categories %}
+    <a class="category-chip {% if active_category == category.slug %}active{% endif %}" href="?category={{ category.slug }}">{{ category.name }}</a>
+  {% endfor %}
+</div>
+<div class="row g-4">
+  {% for product in products %}
+  <div class="col-sm-6 col-lg-4 col-xl-3">
+    <div class="food-card h-100">
+      {% if product.image_url %}<img src="{{ product.image_url }}" class="food-image" alt="{{ product.name }}" onerror="this.style.display='none'">{% else %}<div class="food-placeholder">🍽️</div>{% endif %}
+      <div class="p-3 d-flex flex-column">
+        <div class="small text-uppercase text-muted mb-1">{{ product.category.name }}</div>
+        <h5 class="fw-bold mb-1">{{ product.name }}</h5>
+        <p class="text-muted small flex-grow-1">{{ product.description|default:"Freshly prepared and full of flavour." }}</p>
+        <div class="d-flex justify-content-between align-items-center">
+          <span class="price">₹{{ product.price }}</span>
+          <form method="post" action="{% url 'cart_add' product.id %}">{% csrf_token %}<input type="hidden" name="next" value="{% url 'home' %}"><button class="btn btn-warning fw-semibold">Add +</button></form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="col-12"><div class="empty-state"><div class="display-4">🥣</div><h4>No food items found</h4><p class="text-muted">Try another search or category.</p><a href="{% url 'home' %}" class="btn btn-dark">Clear filters</a></div></div>
+  {% endfor %}
+</div>
+{% endblock %}

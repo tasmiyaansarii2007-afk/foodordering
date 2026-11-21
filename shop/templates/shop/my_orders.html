@@ -1,0 +1,13 @@
+{% extends "shop/base.html" %}
+{% block title %}My Orders | QuickBite{% endblock %}
+{% block content %}
+<h1 class="section-title mb-1">My orders</h1><p class="text-muted mb-4">Your recent QuickBite orders.</p>
+{% for order in orders %}
+<div class="panel p-4 mb-3">
+  <div class="d-flex justify-content-between flex-wrap gap-2"><div><h5 class="fw-bold mb-1">Order #{{ order.id }}</h5><span class="text-muted small">{{ order.created_at|date:"d M Y, h:i A" }}</span></div><div class="text-end"><span class="status-pill">{{ order.status }}</span><div class="fw-bold mt-2">₹{{ order.total }}</div></div></div>
+  <hr>{% for item in order.items.all %}<div class="d-flex justify-content-between small mb-1"><span>{{ item.product_name }} × {{ item.quantity }}</span><span>₹{{ item.line_total }}</span></div>{% endfor %}
+</div>
+{% empty %}
+<div class="empty-state"><div class="display-1">📦</div><h3>No orders yet</h3><p class="text-muted">Your delicious journey starts here.</p><a href="{% url 'home' %}" class="btn btn-warning">Explore menu</a></div>
+{% endfor %}
+{% endblock %}

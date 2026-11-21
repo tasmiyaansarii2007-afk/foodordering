@@ -1,0 +1,21 @@
+{% extends "shop/base.html" %}
+{% block title %}Checkout | QuickBite{% endblock %}
+{% block content %}
+<div class="mb-4"><h1 class="section-title">Checkout</h1><p class="text-muted">Where should we deliver your food?</p></div>
+<div class="row g-4">
+  <div class="col-lg-7"><div class="panel p-4">
+    <h4 class="fw-bold mb-3">Delivery details</h4>
+    <form method="post">{% csrf_token %}
+      {% for field in form %}
+        <div class="mb-3"><label class="form-label fw-semibold" for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.errors %}<div class="text-danger small">{{ field.errors|striptags }}</div>{% endif %}</div>
+      {% endfor %}
+      <div class="alert alert-light border"><strong>Payment method:</strong> Cash on Delivery (demo)</div>
+      <button class="btn btn-warning btn-lg w-100 fw-bold">Place order · ₹{{ total }}</button>
+    </form>
+  </div></div>
+  <div class="col-lg-5"><div class="panel p-4"><h4 class="fw-bold mb-3">Your order</h4>
+    {% for item in items %}<div class="d-flex justify-content-between mb-2"><span>{{ item.product.name }} × {{ item.quantity }}</span><strong>₹{{ item.total_price }}</strong></div>{% endfor %}
+    <hr><div class="d-flex justify-content-between fs-5 fw-bold"><span>Total</span><span>₹{{ total }}</span></div>
+  </div></div>
+</div>
+{% endblock %}
